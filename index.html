@@ -183,8 +183,8 @@
             <p class="vcap has-text-centered">TUM fr3/walking_xyz &mdash; people walking through the view</p>
           </div>
           <div class="column is-half">
-            <video src="./static/video/traj3d_room.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <p class="vcap has-text-centered">TUM fr1/room &mdash; fast handheld motion</p>
+            <video src="./static/video/traj3d_mnb1.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">BONN moving_nonobstructing_box &mdash; a person carrying a box</p>
           </div>
           <div class="column is-half">
             <video src="./static/video/traj3d_MH04.mp4" autoplay muted loop playsinline preload="metadata"></video>
@@ -196,10 +196,11 @@
           </div>
         </div>
         <h4 class="title is-5" style="margin-top: 1rem">Against DropD-SLAM</h4>
-        <video src="./static/video/trajcmp_dropd_all.mp4" controls muted playsinline preload="metadata"></video>
+        <video src="./static/video/trajanchor_dropd_all.mp4" controls muted playsinline preload="metadata"></video>
         <p class="vcap">
-          Same sequences, separate runs of each method (DropD-SLAM: official settings), both scored by the same SE(3)
-          evaluator.
+          Same sequences, separate runs of each method (DropD-SLAM: official settings). For display, both metric
+          trajectories are shifted so that they start at the ground-truth start point (no rotation or scale fit); the
+          ATE in the legend is the full SE(3) evaluation, as in the paper.
         </p>
       </div>
     </section>
@@ -214,8 +215,8 @@
           The temporal head reads the depth backbone's encoder tokens and masks independently moving content; masked
           keypoints are dropped at extraction, so people and carried objects never enter the map.
         </p>
-        <video src="./static/video/cmp_map_crowd_head.mp4" autoplay muted loop playsinline preload="metadata"></video>
-        <p class="vcap has-text-centered">BONN crowd: dense metric map without (left) and with (right) the temporal head mask.</p>
+        <video src="./static/video/cmp_map_crowd_input.mp4" autoplay muted loop playsinline preload="metadata"></video>
+        <p class="vcap has-text-centered">BONN crowd: input frames, and the dense metric map of the same run fused without (middle) and with (right) the temporal head mask.</p>
       </div>
     </section>
 
@@ -229,10 +230,6 @@
           Keyframe depth from the same backbone fused along the final trajectory.
         </p>
         <div class="columns is-multiline">
-          <div class="column is-full">
-            <video src="./static/video/map_crowd.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <p class="vcap has-text-centered">BONN crowd</p>
-          </div>
           <div class="column is-half">
             <video src="./static/video/map_desk.mp4" autoplay muted loop playsinline preload="metadata"></video>
             <p class="vcap has-text-centered">TUM fr1/desk</p>
