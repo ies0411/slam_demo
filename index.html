@@ -1,0 +1,461 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="REALM-SLAM: Real-Time Absolute-Scale Monocular SLAM" />
+    <meta
+      name="keywords"
+      content="SLAM, monocular, metric scale, real-time, depth foundation model, dynamic scenes, TUM RGB-D, BONN, EuRoC, 7-Scenes"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>REALM-SLAM: Real-Time Absolute-Scale Monocular SLAM</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
+    <link rel="stylesheet" href="./static/css/bulma.min.css" />
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
+    <link rel="stylesheet" href="./static/css/index.css" />
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+    <style>
+      .results-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+      .results-table th, .results-table td { padding: 6px 10px; text-align: center; border-bottom: 1px solid #ddd; }
+      .results-table th { background: #f5f5f5; font-weight: 600; }
+      .results-table tr:hover { background: #fafafa; }
+      .highlight-row { background: #f0f7ff !important; font-weight: 600; }
+      .section-divider { border: none; border-top: 2px solid #eee; margin: 0; }
+      .tag-soon { background: #ffdd57; color: #333; font-size: 0.75rem; padding: 2px 8px; border-radius: 3px; font-weight: 600; }
+      .tag-offline { background: #eee; color: #666; font-size: 0.7rem; padding: 1px 6px; border-radius: 3px; }
+      .sub { color: #555; margin-bottom: 1rem; }
+      .note { color: #888; }
+      video { width: 100%; border-radius: 6px; display: block; background: #000; }
+      .vcap { font-size: 0.8rem; color: #666; margin-top: 0.35rem; }
+
+      /* ---- More scenes (input | depth prior | depth-derived geometry) ---- */
+      .scene-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem; }
+      .scene-name { font-family: 'Google Sans', sans-serif; font-size: 1.35rem; font-weight: 500; }
+      .scene-name small { font-size: 0.85rem; color: #888; font-weight: 400; margin-left: 0.4rem; }
+      .scene-nav { display: flex; align-items: center; gap: 0.6rem; font-family: 'Google Sans', sans-serif; color: #555; }
+      .scene-nav button { border: 1px solid #ccc; background: #fff; border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 1rem; }
+      .scene-nav button:hover { background: #f3f3f3; }
+      .scene-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .scene-panel .lbl { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+      .scene-panel img, .scene-panel .geo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; display: block; }
+      .scene-panel .geo { background: #111; position: relative; overflow: hidden; }
+      .geo canvas { display: block; }
+      .geo .ply-status { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ddd; font-size: 0.9rem; pointer-events: none; }
+      .geo .hint { position: absolute; bottom: 6px; left: 8px; color: #aaa; font-size: 0.7rem; pointer-events: none; }
+      .cbar { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #666; margin-top: 0.35rem; }
+      .cbar .bar { flex: 1; height: 8px; border-radius: 4px;
+        background: linear-gradient(90deg, #5e4fa2, #3288bd, #66c2a5, #abdda4, #e6f598, #ffffbf, #fee08b, #fdae61, #f46d43, #d53e4f, #9e0142); }
+      .scene-metric { font-size: 0.8rem; color: #555; }
+      .thumbs { display: flex; gap: 6px; margin-top: 0.8rem; overflow-x: auto; padding-bottom: 4px; }
+      .thumbs img { width: 92px; height: 69px; object-fit: cover; border-radius: 4px; cursor: pointer; opacity: 0.55; border: 2px solid transparent; flex: none; }
+      .thumbs img.active { opacity: 1; border-color: #3273dc; }
+      @media (max-width: 768px) { .scene-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+
+  <body>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-body" style="padding-bottom: 1rem">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column has-text-centered">
+              <h1 class="title is-2 publication-title" style="margin-bottom: 0.8rem">
+                REALM-SLAM: Real-Time Absolute-Scale<br />Monocular SLAM
+              </h1>
+              <div class="is-size-5 publication-authors" style="margin-bottom: 0.3rem">
+                <span class="author-block">Anonymous Authors</span>
+              </div>
+              <div class="column has-text-centered" style="margin-top: 1rem; padding-bottom: 0">
+                <div class="buttons is-centered">
+                  <span class="button is-rounded is-static" style="opacity: 0.6; cursor: default">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span>Paper <span class="tag-soon">Soon</span></span>
+                  </span>
+                  <span class="button is-rounded is-static" style="opacity: 0.6; cursor: default">
+                    <span class="icon"><i class="fas fa-video"></i></span>
+                    <span>Video <span class="tag-soon">Soon</span></span>
+                  </span>
+                  <span class="button is-rounded is-static" style="opacity: 0.6; cursor: default">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>Code <span class="tag-soon">Soon</span></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Abstract -->
+    <section class="section" style="padding-top: 0.5rem; padding-bottom: 1.5rem">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Abstract</h2>
+            <div class="content has-text-justified">
+              <p>
+                We present <strong>REALM-SLAM</strong>, a real-time absolute-scale monocular SLAM system that delivers
+                competitive metric accuracy at frame rate from a single camera, without ground-truth scale or auxiliary
+                sensors. A classical keypoint tracker stays in the real-time loop while one frozen foundation depth
+                backbone runs asynchronously alongside it, yielding metric trajectories at roughly 20&nbsp;Hz on standard
+                indoor benchmarks. In the back end, foundation depth factors enter local bundle adjustment jointly with
+                multi-view reprojections under an explicit information budget, anchoring metric scale and limiting neural
+                depth noise, together with gauge-consistent online rescaling. In the front end, the same backbone serves
+                two roles without adding external semantic networks: its encoder tokens feed a lightweight recurrent
+                temporal dynamic head to filter independently moving objects, while its depth outputs densify weak
+                keyframes on demand to prevent tracking loss. Under oracle-free SE(3) evaluation across four
+                benchmarks, REALM-SLAM attains a median ATE of 1.71&nbsp;cm on TUM RGB-D, 3.46&nbsp;cm on BONN Dynamic,
+                and 46.2&nbsp;cm on EuRoC, along with an average ATE of 12.67&nbsp;cm on 7-Scenes, matching or
+                outperforming competitive metric baselines while running substantially faster.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- More scenes: input | depth prior | depth-derived geometry -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem" id="scenes">
+      <div class="container is-max-desktop">
+        <h3 class="title is-3 has-text-centered">More <em>Scenes</em></h3>
+        <p class="has-text-centered is-size-6 sub">
+          The metric depth prior that REALM-SLAM consumes, on single frames from the evaluated benchmarks. Rotate the
+          back-projected geometry to inspect it; it is in metres, with no scale fitting.
+        </p>
+
+        <div class="scene-head">
+          <div class="scene-name" id="sc-name">&nbsp;</div>
+          <div class="scene-nav">
+            <button id="sc-prev" aria-label="previous scene">&larr;</button>
+            <span id="sc-count">01 / 08</span>
+            <button id="sc-next" aria-label="next scene">&rarr;</button>
+          </div>
+        </div>
+
+        <div class="scene-grid">
+          <div class="scene-panel">
+            <div class="lbl">Input</div>
+            <img id="sc-rgb" alt="input frame" />
+          </div>
+          <div class="scene-panel">
+            <div class="lbl">Depth prior</div>
+            <img id="sc-depth" alt="metric depth prior" />
+            <div class="cbar"><span id="sc-dmin"></span><div class="bar"></div><span id="sc-dmax"></span></div>
+          </div>
+          <div class="scene-panel">
+            <div class="lbl">Depth-derived geometry</div>
+            <div class="geo" id="sc-geo">
+              <div class="ply-status" id="sc-status">Loading&hellip;</div>
+              <div class="hint">Drag to rotate &middot; scroll to zoom</div>
+            </div>
+            <div class="scene-metric" id="sc-metric" style="margin-top: 0.35rem"></div>
+          </div>
+        </div>
+        <div class="thumbs" id="sc-thumbs"></div>
+        <p class="is-size-7 note" style="margin-top: 0.6rem">
+          Depth prior: UniDepthV2 with the camera intrinsics, as used at run time. AbsRel and &delta;<sub>1</sub> are
+          computed against the sensor depth of the same frame without any scale alignment; frames are selected from
+          20 uniformly spaced candidates per sequence.
+        </p>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- Metric trajectories -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem" id="videos">
+      <div class="container is-max-desktop">
+        <h3 class="title is-3 has-text-centered">Metric Trajectories</h3>
+        <p class="has-text-centered is-size-6 sub">
+          Estimated camera paths in the system's own metric units against ground truth (SE(3) alignment, no scale
+          fit).
+        </p>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <video src="./static/video/traj3d_wlkx.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">TUM fr3/walking_xyz &mdash; people walking through the view</p>
+          </div>
+          <div class="column is-half">
+            <video src="./static/video/traj3d_room.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">TUM fr1/room &mdash; fast handheld motion</p>
+          </div>
+          <div class="column is-half">
+            <video src="./static/video/traj3d_MH04.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">EuRoC MH04 (difficult)</p>
+          </div>
+          <div class="column is-half">
+            <video src="./static/video/traj3d_V201.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">EuRoC V201</p>
+          </div>
+        </div>
+        <h4 class="title is-5" style="margin-top: 1rem">Against DropD-SLAM</h4>
+        <video src="./static/video/trajcmp_dropd_all.mp4" controls muted playsinline preload="metadata"></video>
+        <p class="vcap">
+          Same sequences, separate runs of each method (DropD-SLAM: official settings), both scored by the same SE(3)
+          evaluator.
+        </p>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- Dynamic filtering -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem">
+      <div class="container is-max-desktop">
+        <h3 class="title is-3 has-text-centered">Class-Agnostic Dynamic Filtering</h3>
+        <p class="has-text-centered is-size-6 sub">
+          The temporal head reads the depth backbone's encoder tokens and masks independently moving content; masked
+          keypoints are dropped at extraction, so people and carried objects never enter the map.
+        </p>
+        <video src="./static/video/cmp_map_crowd_head.mp4" autoplay muted loop playsinline preload="metadata"></video>
+        <p class="vcap has-text-centered">BONN crowd: dense metric map without (left) and with (right) the temporal head mask.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- Dense metric maps -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem">
+      <div class="container is-max-desktop">
+        <h3 class="title is-3 has-text-centered">Dense Metric Maps</h3>
+        <p class="has-text-centered is-size-6 sub">
+          Keyframe depth from the same backbone fused along the final trajectory.
+        </p>
+        <div class="columns is-multiline">
+          <div class="column is-full">
+            <video src="./static/video/map_crowd.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">BONN crowd</p>
+          </div>
+          <div class="column is-half">
+            <video src="./static/video/map_desk.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">TUM fr1/desk</p>
+          </div>
+          <div class="column is-half">
+            <video src="./static/video/map_7s-redkitchen.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">7-Scenes redkitchen</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- In the wild -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem">
+      <div class="container is-max-desktop">
+        <h3 class="title is-3 has-text-centered">In the Wild</h3>
+        <p class="has-text-centered is-size-6 sub">
+          Handheld phone videos with heuristic intrinsics (no calibration) and no ground truth; the metric scale is
+          the system's own.
+        </p>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <video src="./static/video/wild_office.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">Office</p>
+          </div>
+          <div class="column is-half">
+            <video src="./static/video/wild_entrance.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">Entrance</p>
+          </div>
+          <div class="column is-half">
+            <video src="./static/video/wild_demo_home.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">Home</p>
+          </div>
+          <div class="column is-half">
+            <video src="./static/video/map_custom_office.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <p class="vcap has-text-centered">Office &mdash; dense metric map</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- Architecture -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem">
+      <div class="container is-max-desktop">
+        <h3 class="title is-3 has-text-centered">System Architecture</h3>
+        <img src="./static/images/arch_v3.png" alt="REALM-SLAM architecture" style="width: 100%" />
+        <p class="is-size-6 has-text-justified" style="margin-top: 0.8rem; color: #444">
+          One frozen depth backbone serves three roles. <strong>Network</strong>: an asynchronous encoder pass per
+          frame feeds the temporal dynamic head, and full depth inference runs per keyframe. <strong>Geometry</strong>:
+          an ORB-SLAM3 tracker stays in the real-time loop; weak keyframes are seeded from depth on demand and the map
+          is reborn from depth after tracking loss. <strong>Scale</strong>: budgeted depth factors in local BA and a
+          gauge-consistent rescale keep the trajectory metric.
+        </p>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- Comparison -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem">
+      <div class="container is-max-desktop">
+        <h3 class="title is-3 has-text-centered">Comparison</h3>
+        <div class="columns is-vcentered">
+          <div class="column is-5">
+            <img src="./static/images/radar_mt.png" alt="radar comparison" style="width: 100%" />
+          </div>
+          <div class="column is-7" style="overflow-x: auto">
+            <table class="results-table">
+              <thead>
+                <tr><th>Method</th><th>TUM</th><th>BONN</th><th>EuRoC</th><th>7-Scenes</th><th>Rate (Hz)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>AMB3R-VO</td><td>3.45</td><td><strong>2.31</strong></td><td>275.1</td><td>10.04</td><td>2.6</td></tr>
+                <tr><td>DropD-SLAM</td><td>2.17</td><td>3.27</td><td>348.3</td><td>13.46</td><td>11.0</td></tr>
+                <tr><td>MetricTrail <span class="tag-offline">offline</span></td><td>4.85</td><td>4.36</td><td>493.3</td><td><strong>8.96</strong></td><td>2.4</td></tr>
+                <tr class="highlight-row"><td>REALM-SLAM (Ours)</td><td><strong>1.71</strong></td><td>3.46</td><td><strong>46.2</strong></td><td>12.67</td><td><strong>19.3</strong></td></tr>
+              </tbody>
+            </table>
+            <p class="is-size-7 note" style="margin-top: 0.4rem">
+              SE(3) ATE in cm without scale fitting: TUM, BONN and EuRoC medians, 7-Scenes mean. Rate: mean of the TUM
+              and BONN medians. MetricTrail: one run of the official presets, whole-video intrinsics and re-solves after
+              the last frame; end-to-end rate; 7-Scenes scored on every fifth frame; EuRoC median over the 10 sequences
+              it completed. Per-sequence results are in the paper.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- BibTeX -->
+    <section class="section" style="padding-top: 1.5rem; padding-bottom: 2rem">
+      <div class="container is-max-desktop">
+        <h3 class="title is-3 has-text-centered">BibTeX</h3>
+        <div class="content">
+          <pre style="background: #f5f5f5; padding: 1rem; border-radius: 6px; font-size: 0.85rem"><code>@article{realm-slam2026,
+  title={REALM-SLAM: Real-Time Absolute-Scale Monocular SLAM},
+  author={Anonymous},
+  journal={Under review},
+  year={2026}
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from 'three';
+      import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+      import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+      // cherry-picked scenes; metrics from static/scenes/scenes.json (raw AbsRel / delta1 against sensor depth)
+      const SCENES = [
+        { id: 'sit-x', name: 'Sitting', ds: 'TUM fr3/sitting_xyz' },
+        { id: 'crowd', name: 'Crowd', ds: 'BONN crowd' },
+        { id: 'ptrk', name: 'Person tracking', ds: 'BONN person_tracking' },
+        { id: 'sync', name: 'Synchronous', ds: 'BONN synchronous' },
+        { id: 'desk', name: 'Desk', ds: 'TUM fr1/desk' },
+        { id: 'lo', name: 'Long office', ds: 'TUM fr3/long_office_household' },
+        { id: '7s-redkitchen', name: 'Kitchen', ds: '7-Scenes redkitchen' },
+        { id: '7s-chess', name: 'Chess', ds: '7-Scenes chess' },
+      ];
+      const $ = (id) => document.getElementById(id);
+      let meta = {};
+      try { meta = await (await fetch('./static/scenes/scenes.json')).json(); } catch (e) { console.warn(e); }
+
+      // one shared viewer; the cloud is in the camera frame (x right, y down, z forward), flipped to three.js axes
+      const geo = $('sc-geo');
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x111111);
+      const camera = new THREE.PerspectiveCamera(55, 4 / 3, 0.01, 100);
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      geo.prepend(renderer.domElement);
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      const loader = new PLYLoader();
+      const cache = {};
+      let points = null, idx = 0, token = 0;
+
+      function resize() {
+        const w = geo.clientWidth, h = geo.clientHeight;
+        camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+      }
+      new ResizeObserver(resize).observe(geo);
+
+      function showCloud(g) {
+        if (points) scene.remove(points);
+        points = new THREE.Points(g, new THREE.PointsMaterial({ size: 0.012, vertexColors: true }));
+        scene.add(points);
+        const pos = g.getAttribute('position'), zs = [];
+        for (let i = 0; i < pos.count; i += 37) zs.push(-pos.getZ(i));
+        zs.sort((a, b) => a - b);
+        const zMed = zs[Math.floor(zs.length / 2)];
+        controls.target.set(0, 0, -zMed);                    // orbit around the median depth on the optical axis
+        camera.position.set(zMed * 0.35, zMed * 0.2, zMed * 0.15);  // start near the input viewpoint, slightly off-axis
+        controls.update();
+        $('sc-status').style.display = 'none';
+      }
+
+      function load(id, my) {
+        if (cache[id]) { if (my === token) showCloud(cache[id]); return; }
+        $('sc-status').style.display = 'block';
+        $('sc-status').textContent = 'Loading…';
+        loader.load(`./static/scenes/cloud/${id}.ply`, (g) => {
+          g.scale(1, -1, -1);
+          cache[id] = g;
+          if (my === token) showCloud(g);
+        }, (x) => {
+          if (x.lengthComputable && my === token) $('sc-status').textContent = `Loading… ${Math.round((x.loaded / x.total) * 100)}%`;
+        }, () => { $('sc-status').textContent = 'Failed to load point cloud.'; });
+      }
+
+      function show(i) {
+        idx = (i + SCENES.length) % SCENES.length;
+        const s = SCENES[idx], m = meta[s.id] || {};
+        $('sc-name').innerHTML = `${s.name}<small>${s.ds}</small>`;
+        $('sc-count').textContent = `${String(idx + 1).padStart(2, '0')} / ${String(SCENES.length).padStart(2, '0')}`;
+        $('sc-rgb').src = `./static/scenes/rgb/${s.id}.jpg`;
+        $('sc-depth').src = `./static/scenes/depth/${s.id}.png`;
+        $('sc-dmin').textContent = m.dmin !== undefined ? `${m.dmin.toFixed(1)} m` : '';
+        $('sc-dmax').textContent = m.dmax !== undefined ? `${m.dmax.toFixed(1)} m` : '';
+        $('sc-metric').innerHTML = m.absrel !== undefined
+          ? `vs. sensor depth, no scale fit: AbsRel ${m.absrel.toFixed(3)} &middot; &delta;<sub>1</sub> ${(100 * m.delta1).toFixed(1)}%` : '';
+        document.querySelectorAll('#sc-thumbs img').forEach((t, k) => t.classList.toggle('active', k === idx));
+        load(s.id, ++token);
+      }
+
+      SCENES.forEach((s, k) => {
+        const t = document.createElement('img');
+        t.src = `./static/scenes/rgb/${s.id}.jpg`; t.alt = s.name; t.title = s.ds; t.loading = 'lazy';
+        t.onclick = () => show(k);
+        $('sc-thumbs').appendChild(t);
+      });
+      $('sc-prev').onclick = () => show(idx - 1);
+      $('sc-next').onclick = () => show(idx + 1);
+      document.addEventListener('keydown', (e) => {
+        const r = $('scenes').getBoundingClientRect();
+        if (r.top > window.innerHeight || r.bottom < 0) return;
+        if (e.key === 'ArrowLeft') show(idx - 1);
+        if (e.key === 'ArrowRight') show(idx + 1);
+      });
+      resize();
+      show(0);
+
+      (function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      })();
+    </script>
+  </body>
+</html>

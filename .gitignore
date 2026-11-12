@@ -1,0 +1,9 @@
+.DS_Store
+# not referenced by index.html; kept locally only (paper under review)
+static/realm_slam.pdf
+static/video/highlight.mp4
+static/video/cmp_dropd_wlk-x.mp4
+static/images/qual_masks.png
+static/images/qual_traj.png
+static/images/tdyn_arch.png
+static/images/teaser_poster.jpg

@@ -1,0 +1,128 @@
+{
+ "wlk-x": {
+  "seq": "rgbd_dataset_freiburg3_walking_xyz",
+  "frame": "1341846331.486219.png",
+  "absrel": 0.0648,
+  "delta1": 0.952,
+  "dmin": 1.64,
+  "dmax": 13.88,
+  "n_pts": 76550
+ },
+ "sit-x": {
+  "seq": "rgbd_dataset_freiburg3_sitting_xyz",
+  "frame": "1341845861.197704.png",
+  "absrel": 0.0448,
+  "delta1": 0.9645,
+  "dmin": 1.77,
+  "dmax": 13.8,
+  "n_pts": 76532
+ },
+ "lo": {
+  "seq": "rgbd_dataset_freiburg3_long_office_household",
+  "frame": "1341847985.046612.png",
+  "absrel": 0.0331,
+  "delta1": 0.9814,
+  "dmin": 1.33,
+  "dmax": 5.92,
+  "n_pts": 76724
+ },
+ "desk": {
+  "seq": "rgbd_dataset_freiburg1_desk",
+  "frame": "1305031469.296754.png",
+  "absrel": 0.0243,
+  "delta1": 0.9829,
+  "dmin": 0.89,
+  "dmax": 2.93,
+  "n_pts": 76567
+ },
+ "xyz": {
+  "seq": "rgbd_dataset_freiburg1_xyz",
+  "frame": "1305031111.043327.png",
+  "absrel": 0.0243,
+  "delta1": 0.9901,
+  "dmin": 0.77,
+  "dmax": 3.3,
+  "n_pts": 76790
+ },
+ "crowd": {
+  "seq": "rgbd_bonn_crowd",
+  "frame": "1548339839.08001.png",
+  "absrel": 0.0395,
+  "delta1": 0.9787,
+  "dmin": 0.91,
+  "dmax": 3.46,
+  "n_pts": 76787
+ },
+ "bal2": {
+  "seq": "rgbd_bonn_balloon2",
+  "frame": "1548266542.44356.png",
+  "absrel": 0.0198,
+  "delta1": 0.9965,
+  "dmin": 1.28,
+  "dmax": 3.88,
+  "n_pts": 76561
+ },
+ "mnb1": {
+  "seq": "rgbd_bonn_moving_nonobstructing_box",
+  "frame": "1548266075.31021.png",
+  "absrel": 0.0364,
+  "delta1": 0.9823,
+  "dmin": 1.73,
+  "dmax": 3.29,
+  "n_pts": 76800
+ },
+ "ptrk": {
+  "seq": "rgbd_bonn_person_tracking",
+  "frame": "1548265889.90420.png",
+  "absrel": 0.023,
+  "delta1": 0.9946,
+  "dmin": 1.42,
+  "dmax": 3.24,
+  "n_pts": 76346
+ },
+ "sync": {
+  "seq": "rgbd_bonn_synchronous",
+  "frame": "1548340302.45360.png",
+  "absrel": 0.0325,
+  "delta1": 0.9869,
+  "dmin": 1.12,
+  "dmax": 3.34,
+  "n_pts": 76799
+ },
+ "7s-redkitchen": {
+  "seq": "redkitchen",
+  "frame": "frame-000855.color.png",
+  "absrel": 0.0572,
+  "delta1": 0.9604,
+  "dmin": 1.02,
+  "dmax": 3.73,
+  "n_pts": 76795
+ },
+ "7s-office": {
+  "seq": "office",
+  "frame": "frame-000618.color.png",
+  "absrel": 0.0696,
+  "delta1": 0.9684,
+  "dmin": 1.04,
+  "dmax": 2.91,
+  "n_pts": 76799
+ },
+ "7s-chess": {
+  "seq": "chess",
+  "frame": "frame-000050.color.png",
+  "absrel": 0.0968,
+  "delta1": 0.8787,
+  "dmin": 1.62,
+  "dmax": 4.38,
+  "n_pts": 75856
+ },
+ "7s-pumpkin": {
+  "seq": "pumpkin",
+  "frame": "frame-000950.color.png",
+  "absrel": 0.0167,
+  "delta1": 1.0,
+  "dmin": 1.55,
+  "dmax": 2.44,
+  "n_pts": 76800
+ }
+}
